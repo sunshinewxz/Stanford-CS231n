@@ -45,13 +45,16 @@ class LinearClassifier(object):
       # Sample batch_size elements from the training data and their           #
       # corresponding labels to use in this round of gradient descent.        #
       # Store the data in X_batch and their corresponding labels in           #
-      # y_batch; after sampling X_batch should have shape (dim, batch_size)   #
+      # y_batch; after sampling X_batch should have shape (batch_size, dim)   #
       # and y_batch should have shape (batch_size,)                           #
       #                                                                       #
       # Hint: Use np.random.choice to generate indices. Sampling with         #
       # replacement is faster than sampling without replacement.              #
       #########################################################################
-      pass
+      index = np.random.choice(num_train, batch_size, replace = True)
+      X_batch = X[index]
+      # X_batch.resize(dim, batch_size)
+      y_batch = y[index]
       #########################################################################
       #                       END OF YOUR CODE                                #
       #########################################################################
@@ -65,7 +68,7 @@ class LinearClassifier(object):
       # TODO:                                                                 #
       # Update the weights using the gradient and the learning rate.          #
       #########################################################################
-      pass
+      self.W -= learning_rate * grad
       #########################################################################
       #                       END OF YOUR CODE                                #
       #########################################################################
@@ -89,12 +92,13 @@ class LinearClassifier(object):
       array of length N, and each element is an integer giving the predicted
       class.
     """
-    y_pred = np.zeros(X.shape[0])
+    y_pred = np.zeros(X.shape[0]) # N*_
     ###########################################################################
     # TODO:                                                                   #
     # Implement this method. Store the predicted labels in y_pred.            #
     ###########################################################################
-    pass
+    score = X.dot(self.W)
+    y_pred = np.argmax(score, axis=1)
     ###########################################################################
     #                           END OF YOUR CODE                              #
     ###########################################################################
@@ -115,7 +119,7 @@ class LinearClassifier(object):
     - loss as a single float
     - gradient with respect to self.W; an array of the same shape as W
     """
-    pass
+    return svm_loss_vectorized(self.W, X_batch, y_batch, reg)
 
 
 class LinearSVM(LinearClassifier):
